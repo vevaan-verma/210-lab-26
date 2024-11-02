@@ -20,6 +20,7 @@ long long raceDeletion(DataStructure dataStructure);
 
 /* CONSTANTS */
 const string FILE_NAME = "codes.txt"; // file name
+const int NUM_SIMULATIONS = 15; // number of simulations
 
 /* GLOBAL VARIABLES */
 ifstream fin;
@@ -40,6 +41,7 @@ int main() {
 		return 1; // return error code
 
 	}
+	cout << "Number of simulations: " << NUM_SIMULATIONS << endl;
 
 	cout << setw(10) << "Operation" << setw(10) << "Vector" << setw(10) << "List" << setw(10) << "Set" << endl; // output header
 	cout << setw(10) << "Read" << setw(10) << raceReading(VECTOR) << setw(10) << raceReading(LIST) << setw(10) << raceReading(SET) << endl; // output read duration
@@ -58,51 +60,58 @@ int main() {
 // returns: long long - the duration of the operation in milliseconds
 long long raceReading(DataStructure dataStructure) {
 
-	fin.seekg(0, ios::beg); // go to beginning of file
+	long long totalDuration = 0; // to hold the duration of the operation
 
-	string code; // to hold the input codes
-	auto start = high_resolution_clock::now(); // start time
+	for (int i = 0; i < NUM_SIMULATIONS; i++) { // loop through simulations
 
-	switch (dataStructure) { // switch statement to determine data structure (switch statements make the code more readable and scalable)
+		fin.seekg(0, ios::beg); // go to beginning of file
 
-	case VECTOR: // if data structure is vector
+		string code; // to hold the input codes
+		auto start = high_resolution_clock::now(); // start time
 
-		while (!fin.eof()) { // while the end of the file has not been reached
+		switch (dataStructure) { // switch statement to determine data structure (switch statements make the code more readable and scalable)
 
-			fin >> code; // read code
-			v.push_back(code); // add code to vector
+		case VECTOR: // if data structure is vector
+
+			while (!fin.eof()) { // while the end of the file has not been reached
+
+				fin >> code; // read code
+				v.push_back(code); // add code to vector
+
+			}
+
+			break;
+
+		case LIST: // if data structure is list
+
+			while (!fin.eof()) { // while the end of the file has not been reached
+
+				fin >> code; // read code
+				l.push_back(code); // add code to list
+
+			}
+
+			break;
+
+		case SET: // if data structure is set
+
+			while (!fin.eof()) { // while the end of the file has not been reached
+
+				fin >> code; // read code
+				s.insert(code); // add code to set
+
+			}
+
+			break;
 
 		}
 
-		break;
-
-	case LIST: // if data structure is list
-
-		while (!fin.eof()) { // while the end of the file has not been reached
-
-			fin >> code; // read code
-			l.push_back(code); // add code to list
-
-		}
-
-		break;
-
-	case SET: // if data structure is set
-
-		while (!fin.eof()) { // while the end of the file has not been reached
-
-			fin >> code; // read code
-			s.insert(code); // add code to set
-
-		}
-
-		break;
-
+		auto end = high_resolution_clock::now(); // end time
+		auto duration = duration_cast<milliseconds>(end - start); // duration
+		totalDuration += duration.count(); // add duration to total duration
 	}
 
-	auto end = high_resolution_clock::now(); // end time
-	auto duration = duration_cast<milliseconds>(end - start); // duration
-	return duration.count(); // return duration
+	return totalDuration / NUM_SIMULATIONS; // return average duration
 
 }
 
@@ -111,32 +120,40 @@ long long raceReading(DataStructure dataStructure) {
 // returns: long long - the duration of the operation in milliseconds
 long long raceSorting(DataStructure dataStructure) {
 
-	fin.seekg(0, ios::beg); // go to beginning of file
+	long long totalDuration = 0; // to hold the duration of the operation
 
-	string code; // to hold the input codes
-	auto start = high_resolution_clock::now(); // start time
+	for (int i = 0; i < NUM_SIMULATIONS; i++) { // loop through simulations
 
-	switch (dataStructure) { // switch statement to determine data structure
+		fin.seekg(0, ios::beg); // go to beginning of file
 
-	case VECTOR: // if data structure is vector
+		string code; // to hold the input codes
+		auto start = high_resolution_clock::now(); // start time
 
-		sort(v.begin(), v.end()); // sort vector
-		break;
+		switch (dataStructure) { // switch statement to determine data structure
 
-	case LIST: // if data structure is list
+		case VECTOR: // if data structure is vector
 
-		l.sort(); // sort list
-		break;
+			sort(v.begin(), v.end()); // sort vector
+			break;
 
-	case SET: // if data structure is set
+		case LIST: // if data structure is list
 
-		return -1; // return -1 because sets are already sorted
+			l.sort(); // sort list
+			break;
+
+		case SET: // if data structure is set
+
+			return -1; // return -1 because sets are already sorted
+
+		}
+
+		auto end = high_resolution_clock::now(); // end time
+		auto duration = duration_cast<milliseconds>(end - start); // duration
+		totalDuration += duration.count(); // add duration to total duration
 
 	}
 
-	auto end = high_resolution_clock::now(); // end time
-	auto duration = duration_cast<milliseconds>(end - start); // duration
-	return duration.count(); // return duration
+	return totalDuration / NUM_SIMULATIONS; // return average duration
 
 }
 
@@ -145,35 +162,43 @@ long long raceSorting(DataStructure dataStructure) {
 // returns: long long - the duration of the operation in milliseconds
 long long raceInsertion(DataStructure dataStructure) {
 
-	fin.seekg(0, ios::beg); // go to beginning of file
+	long long totalDuration = 0; // to hold the duration of the operation
 
-	string code; // to hold the input codes
-	auto start = high_resolution_clock::now(); // start time
-	list<string>::iterator it = l.begin(); // iterator to traverse list (unfortunately, the iterator has to be declared here because it cannot be declared in the switch statement)
+	for (int i = 0; i < NUM_SIMULATIONS; i++) { // loop through simulations
 
-	switch (dataStructure) { // switch statement to determine data structure
+		fin.seekg(0, ios::beg); // go to beginning of file
 
-	case VECTOR: // if data structure is vector
+		string code; // to hold the input codes
+		auto start = high_resolution_clock::now(); // start time
+		list<string>::iterator it = l.begin(); // iterator to traverse list (unfortunately, the iterator has to be declared here because it cannot be declared in the switch statement)
 
-		v.insert(v.begin() + 10000, "TESTCODE"); // add new value to the middle of the vector
-		break;
+		switch (dataStructure) { // switch statement to determine data structure
 
-	case LIST: // if data structure is list
+		case VECTOR: // if data structure is vector
 
-		advance(it, 10000); // advance iterator to middle of list
-		l.insert(it, "TESTCODE"); // add new value to the middle of the list
-		break;
+			v.insert(v.begin() + 10000, "TESTCODE"); // add new value to the middle of the vector
+			break;
 
-	case SET: // if data structure is set
+		case LIST: // if data structure is list
 
-		s.insert("TESTCODE"); // add new value to the set
-		break;
+			advance(it, 10000); // advance iterator to middle of list
+			l.insert(it, "TESTCODE"); // add new value to the middle of the list
+			break;
+
+		case SET: // if data structure is set
+
+			s.insert("TESTCODE"); // add new value to the set
+			break;
+
+		}
+
+		auto end = high_resolution_clock::now(); // end time
+		auto duration = duration_cast<milliseconds>(end - start); // duration
+		totalDuration += duration.count(); // add duration to total duration
 
 	}
 
-	auto end = high_resolution_clock::now(); // end time
-	auto duration = duration_cast<milliseconds>(end - start); // duration
-	return duration.count(); // return duration
+	return totalDuration / NUM_SIMULATIONS; // return average duration
 
 }
 
@@ -182,34 +207,42 @@ long long raceInsertion(DataStructure dataStructure) {
 // returns: long long - the duration of the operation in milliseconds
 long long raceDeletion(DataStructure dataStructure) {
 
-	fin.seekg(0, ios::beg); // go to beginning of file
+	long long totalDuration = 0; // to hold the duration of the operation
 
-	string code; // to hold the input codes
-	auto start = high_resolution_clock::now(); // start time
-	list<string>::iterator it = l.begin(); // iterator to traverse list (once again, unfortunately, the iterator has to be declared here because it cannot be declared in the switch statement)
+	for (int i = 0; i < NUM_SIMULATIONS; i++) { // loop through simulations
 
-	switch (dataStructure) { // switch statement to determine data structure
+		fin.seekg(0, ios::beg); // go to beginning of file
 
-	case VECTOR: // if data structure is vector
+		string code; // to hold the input codes
+		auto start = high_resolution_clock::now(); // start time
+		list<string>::iterator it = l.begin(); // iterator to traverse list (once again, unfortunately, the iterator has to be declared here because it cannot be declared in the switch statement)
 
-		v.erase(v.begin() + 10000); // delete value from the middle of the vector
-		break;
+		switch (dataStructure) { // switch statement to determine data structure
 
-	case LIST: // if data structure is list
+		case VECTOR: // if data structure is vector
 
-		advance(it, 10000); // advance iterator to middle of list
-		l.erase(it); // delete value from the middle of the list
-		break;
+			v.erase(v.begin() + 10000); // delete value from the middle of the vector
+			break;
 
-	case SET: // if data structure is set
+		case LIST: // if data structure is list
 
-		s.erase("TESTCODE"); // delete value from the set
-		break;
+			advance(it, 10000); // advance iterator to middle of list
+			l.erase(it); // delete value from the middle of the list
+			break;
+
+		case SET: // if data structure is set
+
+			s.erase("TESTCODE"); // delete value from the set
+			break;
+
+		}
+
+		auto end = high_resolution_clock::now(); // end time
+		auto duration = duration_cast<milliseconds>(end - start); // duration
+		totalDuration += duration.count(); // add duration to total duration
 
 	}
 
-	auto end = high_resolution_clock::now(); // end time
-	auto duration = duration_cast<milliseconds>(end - start); // duration
-	return duration.count(); // return duration
+	return totalDuration / NUM_SIMULATIONS; // return average duration
 
 }
